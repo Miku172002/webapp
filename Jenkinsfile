@@ -39,5 +39,21 @@ pipeline {
             }
         }
 
+        stage('Deploy') {
+            steps {
+
+                sshagent(['tomcatnew']) {
+
+                    sh """
+                    scp -o StrictHostKeyChecking=no target/myweb.war ec2-user@16.171.115.17:/home/ec2-user/tomcat10/webapps/
+
+                    ssh -o StrictHostKeyChecking=no ec2-user@16.171.115.17 /home/ec2-user/tomcat10/bin/shutdown.sh
+
+                    ssh -o StrictHostKeyChecking=no ec2-user@16.171.115.17 /home/ec2-user/tomcat10/bin/startup.sh
+                    """
+                }
+            }
+        }
+
     }
 }
